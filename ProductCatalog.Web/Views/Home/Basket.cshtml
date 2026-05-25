@@ -1,0 +1,438 @@
+﻿@model ProductCatalog.Model.model.Cart.Cart
+@using Microsoft.EntityFrameworkCore
+@{
+    ViewData["Title"] = "Корзина";
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger rounded-3 mb-3">
+        ⚠️ @TempData["Error"]
+    </div>
+}
+
+<style>
+    .basket-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 16px;
+    }
+
+    .basket-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2e3642;
+        margin-bottom: 20px;
+    }
+
+    .basket-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .items-col {
+    }
+
+    .basket-item {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 16px;
+        margin-bottom: 12px;
+        display: grid;
+        grid-template-columns: 140px 1fr auto;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .basket-img {
+        width: 140px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #f2f5fb;
+    }
+
+    .item-name {
+        font-weight: 700;
+        font-size: 16px;
+        color: #2e3642;
+        margin-bottom: 4px;
+    }
+
+    .item-category {
+        font-size: 13px;
+        color: #8b95a8;
+    }
+
+    .item-price-block {
+        text-align: right;
+    }
+
+    .item-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2e3642;
+        white-space: nowrap;
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .qty-btn {
+        width: 30px;
+        height: 30px;
+        border: 1.5px solid #e9edf5;
+        border-radius: 8px;
+        background: #f9fafc;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+        .qty-btn:hover {
+            border-color: #6b4dff;
+            color: #6b4dff;
+        }
+
+    .qty-value {
+        font-size: 15px;
+        font-weight: 600;
+        min-width: 22px;
+        text-align: center;
+    }
+
+    .link-btn {
+        background: none;
+        border: none;
+        font-size: 13px;
+        color: #8b95a8;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 0;
+        transition: color 0.2s;
+    }
+
+        .link-btn:hover {
+            color: #e74c3c;
+        }
+
+    .basket-footer {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+        .basket-footer .spacer {
+            flex: 1;
+        }
+
+    .btn-continue {
+        border: 1.5px solid #e9edf5;
+        border-radius: 999px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        background: #fff;
+        color: #2e3642;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+        .btn-continue:hover {
+            border-color: #6b4dff;
+            color: #6b4dff;
+        }
+
+    .btn-checkout {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        box-shadow: 0 8px 18px rgba(74,88,255,0.28);
+        cursor: pointer;
+        transition: opacity 0.2s;
+        text-decoration: none;
+    }
+
+        .btn-checkout:hover {
+            opacity: 0.9;
+        }
+
+    .link-danger {
+        background: none;
+        border: none;
+        font-size: 13px;
+        color: #8b95a8;
+        cursor: pointer;
+        text-decoration: underline;
+        transition: color 0.2s;
+    }
+
+        .link-danger:hover {
+            color: #e74c3c;
+        }
+
+    .summary-col {
+        position: sticky;
+        top: 20px;
+    }
+
+    .summary-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 24px;
+        margin-bottom: 16px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .summary-label {
+        font-size: 14px;
+        color: #8b95a8;
+    }
+
+    .summary-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2e3642;
+    }
+
+    .summary-total-label {
+        font-size: 15px;
+        font-weight: 600;
+        color: #2e3642;
+    }
+
+    .summary-total-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2e3642;
+    }
+
+    .divider {
+        height: 1px;
+        background: #f0f2f7;
+        margin: 14px 0;
+    }
+
+    .btn-checkout-full {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        box-shadow: 0 8px 18px rgba(74,88,255,0.28);
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 0.2s;
+        margin-top: 4px;
+    }
+
+        .btn-checkout-full:hover {
+            opacity: 0.9;
+        }
+
+    .hint-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 20px;
+        font-size: 13px;
+        color: #8b95a8;
+        line-height: 1.6;
+    }
+
+    .empty-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 60px 24px;
+        text-align: center;
+        color: #8b95a8;
+    }
+
+    .empty-icon {
+        font-size: 52px;
+        margin-bottom: 16px;
+    }
+
+    .empty-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2e3642;
+        margin-bottom: 8px;
+    }
+
+    .btn-catalog {
+        display: inline-block;
+        margin-top: 16px;
+        border: none;
+        border-radius: 999px;
+        padding: 11px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+        .btn-catalog:hover {
+            opacity: 0.92;
+            color: #fff;
+        }
+
+    @@media (max-width: 768px) {
+        .basket-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .basket-item {
+            grid-template-columns: 100px 1fr;
+        }
+
+        .basket-img {
+            width: 100px;
+            height: 70px;
+        }
+
+        .item-price-block {
+            grid-column: 2;
+        }
+    }
+</style>
+
+<div class="basket-wrap">
+    <div class="basket-title">Ваша корзина</div>
+
+    @if (Model == null || !Model.Items.Any())
+    {
+        <div class="empty-card">
+            <div class="empty-icon">🛍️</div>
+            <div class="empty-title">Корзина пуста</div>
+            <div>Добавьте товары из каталога</div>
+            <a asp-controller="Home" asp-action="Index" class="btn-catalog">Перейти в каталог</a>
+        </div>
+    }
+    else
+    {
+        <div class="basket-layout">
+
+            <div class="items-col">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="basket-item">
+                        <img class="basket-img"
+                             src="@(string.IsNullOrEmpty(item.Game.ImageUrl) ? "https://placehold.co/140x90?text=?" : item.Game.ImageUrl)"
+                             alt="@item.Game.Name" />
+
+                        <div>
+                            <div class="item-name">@item.Game.Name</div>
+                            <div class="item-category">@item.Game.Category?.Name</div>
+                        </div>
+
+                        <div class="item-price-block">
+                            <div class="item-price">@((item.Game.Price * item.Quantity).ToString("N0")) ₽</div>
+                            <div class="item-actions">
+                                <div class="qty-control">
+                                    <form asp-action="UpdateQuantity" method="post" style="display:contents">
+                                        <input type="hidden" name="itemId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                        <button type="submit" class="qty-btn">−</button>
+                                    </form>
+                                    <span class="qty-value">@item.Quantity</span>
+                                    <form asp-action="UpdateQuantity" method="post" style="display:contents">
+                                        <input type="hidden" name="itemId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                        <button type="submit" class="qty-btn">+</button>
+                                    </form>
+                                </div>
+                                <form asp-action="RemoveFromCart" method="post">
+                                    <input type="hidden" name="itemId" value="@item.Id" />
+                                    <button type="submit" class="link-btn">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="basket-footer">
+                    <a asp-controller="Home" asp-action="Index" class="btn-continue">
+                        ← Продолжить покупки
+                    </a>
+                    <a asp-controller="Home" asp-action="Checkout" class="btn-checkout">
+                        Перейти к оплате
+                    </a>
+
+                    <div class="spacer"></div>
+
+                    <form asp-action="ClearCart" method="post">
+                        <button type="submit" class="link-danger">Удалить все товары</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="summary-col">
+                <div class="summary-card">
+                    <div class="summary-row">
+                        <span class="summary-label">Товаров</span>
+                        <span class="summary-value">@Model.Items.Count поз.</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Сумма</span>
+                        <span class="summary-value">@Model.TotalPrice.ToString("N0") ₽</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="summary-row">
+                        <span class="summary-total-label">Общая стоимость</span>
+                        <span class="summary-total-value">@Model.TotalPrice.ToString("N0") ₽</span>
+                    </div>
+                    <a asp-controller="Home" asp-action="Checkout" class="btn-checkout-full">
+                        Перейти к оплате
+                    </a>
+                </div>
+
+                @* <div class="hint-card">
+                    💡 При покупке цифрового товара вы получаете
+                    лицензионный ключ для активации в вашем аккаунте.
+                </div> *@
+            </div>
+
+        </div>
+    }
+</div>

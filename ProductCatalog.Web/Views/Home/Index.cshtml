@@ -1,0 +1,149 @@
+﻿@model IEnumerable<ProductCatalog.Model.model.Product.Product>
+@{
+    ViewData["Title"] = "Каталог товаров";
+    var sortOrder = ViewData["CurrentSort"]?.ToString();
+    var nameSort = ViewData["NameSort"]?.ToString();
+    var search = ViewData["SearchString"]?.ToString();
+}
+
+<style>
+    .recommend {
+        margin-top: 42px;
+    }
+
+        .recommend h3 {
+            margin-bottom: 16px;
+            font-size: 28px;
+        }
+
+    .recommend-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .game-card {
+        border: 1px solid #edf1f8;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(34,58,107,0.04);
+        overflow: hidden;
+        padding: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(34,58,107,0.12);
+        }
+
+    .game-cover {
+        width: 100%;
+        height: 190px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #f2f5fb;
+    }
+
+    .game-price {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 10px 0 4px;
+    }
+
+    .game-title {
+        font-size: 14px;
+        min-height: 38px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .game-meta {
+        font-size: 12px;
+        color: #8b95a8;
+        margin: 6px 0 10px;
+    }
+
+    .small-buy {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 9px 14px;
+        color: #fff !important;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+        .small-buy:hover {
+            opacity: 0.85;
+        }
+
+    .no-image {
+        width: 100%;
+        height: 190px;
+        border-radius: 12px;
+        background: #f2f5fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #adb5bd;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 992px) {
+        .recommend-grid {
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .recommend-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container recommend">
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Товары не найдены.</div>
+    }
+    else
+    {
+        <div class="recommend-grid">
+            @foreach (var product in Model)
+            {
+                <article class="game-card">
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img class="game-cover" src="@product.ImageUrl" alt="@product.Name" />
+                    }
+                    else
+                    {
+                        <div class="no-image">Нет фото</div>
+                    }
+
+                    <p class="game-price">@product.Price.ToString("0") ₽</p>
+                    <p class="game-title">@product.Name</p>
+                    @if (!string.IsNullOrEmpty(product.Description))
+                    {
+                        <div class="game-meta text-truncate">@product.Description</div>
+                    }
+                    <div class="game-meta">@(product.Category?.Name ?? "—")</div>
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="small-buy">
+                        Подробнее
+                    </a>
+                </article>
+            }
+        </div>
+    }
+</div>

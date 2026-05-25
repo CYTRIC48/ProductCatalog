@@ -1,0 +1,160 @@
+﻿@model ProductCatalog.Model.model.User.User
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_LayoutClean";
+}
+
+<style>
+    .register-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+    }
+
+    .register-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        padding: 40px 36px;
+        width: 100%;
+        max-width: 460px;
+    }
+
+    .register-logo {
+        font-size: 26px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 6px;
+    }
+
+    .register-subtitle {
+        color: #8b95a8;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
+
+    .register-card label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4f5b6b;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .register-card .form-control {
+        border: 1.5px solid #e9edf5;
+        border-radius: 12px;
+        padding: 11px 14px;
+        font-size: 15px;
+        background: #f9fafc;
+        transition: border 0.2s;
+    }
+
+        .register-card .form-control:focus {
+            border-color: #6b4dff;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(107,77,255,0.08);
+        }
+
+    .btn-register {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 13px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        box-shadow: 0 8px 18px rgba(74,88,255,0.28);
+        cursor: pointer;
+        transition: opacity 0.2s;
+        margin-top: 6px;
+    }
+
+        .btn-register:hover {
+            opacity: 0.92;
+        }
+
+    .register-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #8b95a8;
+    }
+
+        .register-footer a {
+            color: #6b4dff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .register-footer a:hover {
+                text-decoration: underline;
+            }
+
+    .fields-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 16px;
+    }
+</style>
+
+<div class="register-wrap">
+    <div class="register-card">
+        <div class="register-logo">МАРКЕТ</div>
+        <div class="register-subtitle">Создайте новый аккаунт</div>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small rounded-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="FullName">Полное имя</label>
+                <input asp-for="FullName" class="form-control" placeholder="Иванов Иван Иванович" autofocus />
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password">Пароль</label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="fields-row">
+                <div class="mb-3">
+                    <label asp-for="Phone">Телефон</label>
+                    <input asp-for="Phone" class="form-control" placeholder="+7 (999) 999-99-99" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Address">Адрес</label>
+                    <input asp-for="Address" class="form-control" placeholder="Город, улица, дом" />
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">Зарегистрироваться</button>
+        </form>
+
+        <div class="register-footer">
+            Уже есть аккаунт?
+            <a asp-action="Login">Войти</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

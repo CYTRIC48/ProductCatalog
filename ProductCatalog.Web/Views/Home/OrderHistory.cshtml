@@ -1,0 +1,204 @@
+﻿@model List<ProductCatalog.Model.model.Order.Order>
+@{
+    ViewData["Title"] = "История покупок";
+}
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .history-wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 16px;
+    }
+
+    .history-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2e3642;
+        margin-bottom: 20px;
+    }
+
+    .order-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 20px 24px;
+        margin-bottom: 14px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .order-number {
+        font-weight: 700;
+        font-size: 16px;
+        color: #2e3642;
+    }
+
+    .order-date {
+        font-size: 13px;
+        color: #8b95a8;
+        margin-top: 2px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .divider {
+        height: 1px;
+        background: #f0f2f7;
+        margin: 12px 0;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .item-name {
+        color: #4f5b6b;
+    }
+
+    .item-price {
+        font-weight: 600;
+        color: #2e3642;
+        white-space: nowrap;
+    }
+
+    .order-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+    }
+
+    .total-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2e3642;
+    }
+
+    .total-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #6b4dff;
+    }
+
+    .empty-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 60px 24px;
+        text-align: center;
+        color: #8b95a8;
+    }
+
+    .empty-icon {
+        font-size: 52px;
+        margin-bottom: 16px;
+    }
+
+    .empty-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2e3642;
+        margin-bottom: 8px;
+    }
+
+    .btn-catalog {
+        display: inline-block;
+        margin-top: 16px;
+        border: none;
+        border-radius: 999px;
+        padding: 11px 28px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+        .btn-catalog:hover {
+            opacity: 0.92;
+            color: #fff;
+        }
+
+    .btn-back {
+        display: inline-block;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6b4dff;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            text-decoration: underline;
+            color: #6b4dff;
+        }
+</style>
+
+<div class="history-wrap">
+    <a asp-controller="Account" asp-action="Profile" class="btn-back">← Назад в личный кабинет</a>
+    <div class="history-title">🧾 История покупок</div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-card">
+            <div class="empty-icon">🛍️</div>
+            <div class="empty-title">Заказов пока нет</div>
+            <div>Перейдите в каталог и сделайте первую покупку</div>
+            <a asp-controller="Home" asp-action="Index" class="btn-catalog">Перейти в каталог</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var order in Model)
+        {
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-number">Заказ №@order.Id</div>
+                        <div class="order-date">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <span class="status-badge">✓ Оплачен</span>
+                </div>
+
+                <div class="divider"></div>
+
+                @foreach (var item in order.Items)
+                {
+                    <div class="item-row">
+                        <span class="item-name">@item.ProductName × @item.Quantity</span>
+                        <span class="item-price">@((item.Price * item.Quantity).ToString("N0")) ₽</span>
+                    </div>
+                }
+
+                <div class="divider"></div>
+
+                <div class="order-total">
+                    <span class="total-label">Итого</span>
+                    <span class="total-value">@order.TotalAmount.ToString("N0") ₽</span>
+                </div>
+            </div>
+        }
+    }
+</div>

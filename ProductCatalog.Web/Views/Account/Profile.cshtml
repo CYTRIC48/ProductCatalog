@@ -1,0 +1,168 @@
+﻿@model ProductCatalog.Model.model.User.User
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<style>
+    .card {
+        border-radius: 16px !important;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: #ffffff;
+        overflow: hidden;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+            background: linear-gradient(135deg, #4f8ef7, #9b59b6) !important;
+        }
+
+            .card:hover .fw-bold,
+            .card:hover .text-muted,
+            .card:hover .user-name,
+            .card:hover .user-email,
+            .card:hover .user-details div,
+            .card:hover .fs-5 {
+                color: #ffffff !important;
+            }
+
+            .card:hover .icon-circle {
+                background-color: rgba(255, 255, 255, 0.2) !important;
+                color: white !important;
+            }
+
+            .card:hover .btn-outline-primary {
+                border-color: white !important;
+                color: white !important;
+            }
+
+                .card:hover .btn-outline-primary:hover
+
+                .card:hover .logout-link {
+                    color: #ffc107 !important;
+                }
+</style>
+
+<div class="container mt-4">
+
+        <div class="d-flex justify-content-center gap-4 mb-4">
+        <div class="card p-2">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-dark fw-semibold">
+                🏠 Главная
+            </a>
+        </div>
+        <div class="card p-2">
+            <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-dark fw-semibold">
+                ❤️ Избранное
+            </a>
+        </div>
+        <div class="card p-2">
+            <a asp-controller="Home" asp-action="OrderHistory" class="text-decoration-none text-dark fw-semibold">
+                🛍️ Покупки
+            </a>
+        </div>
+        <div class="card p-2">
+            <a asp-controller="Home" asp-action="MyReviews" class="text-decoration-none text-dark fw-semibold">
+                👍 Отзывы
+            </a>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-3 user-card">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="user-avatar rounded-circle d-flex align-items-center justify-content-center text-white">
+                        @(Model.FullName != null ? Model.FullName[0].ToString().ToUpper() : "?")
+                    </div>
+                    <div class="user-info">
+                        <div class="fw-bold fs-5 user-name">@(Model.FullName ?? "Пользователь")</div>
+                        <div class="text-muted small user-email">@Model.Email</div>
+                    </div>
+                </div>
+
+                <div class="user-details">
+                    @if (!string.IsNullOrEmpty(Model.Phone))
+                    {
+                        <div class="text-muted small">📞 Телефон: <strong>@Model.Phone</strong></div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Address))
+                    {
+                        <div class="text-muted small mt-1">📍 Адрес: <strong>@Model.Address</strong></div>
+                    }
+                </div>
+
+                <div class="mt-auto pt-3">
+                    <a asp-controller="Account" asp-action="Logout" class="logout-link">Выйти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-3">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="icon-circle">
+                        <span class="fs-4">📊</span>
+                    </div>
+                    <div class="fw-bold fs-5">Активность</div>
+                </div>
+
+                <div class="user-details">
+                    <div class="text-muted small mb-2">
+                        📅 Дата регистрации:
+                        <strong>@Model.CreatedAt.ToString("dd.MM.yyyy")</strong>
+                    </div>
+                    <div class="text-muted small mb-2">
+                        📦 Товаров размещено:
+                        <strong>@(ViewBag.ProductCount ?? 0)</strong>
+                    </div>
+                    <div class="text-muted small">
+                        ⭐ Отзывов оставлено:
+                        <strong>@(ViewBag.ReviewCount ?? 0)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 p-3 card-manage">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="icon-circle">
+                        <span class="fs-4">⚙️</span>
+                    </div>
+                    <div class="fw-bold fs-5">Настройки</div>
+                </div>
+                <div class="text-muted">Редактирование профиля и настройки аккаунта</div>
+                <div class="mt-auto pt-3">
+                    <a asp-controller="Account" asp-action="Edit" class="btn btn-sm btn-outline-primary w-100">
+                        ✏️ Редактировать профиль
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 p-3">
+                <div class="fw-bold fs-6 mb-1">📦 Товары</div>
+                <div class="text-muted small">Перейти к списку товаров</div>
+                <div class="mt-2">
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-sm btn-outline-primary">Открыть каталог</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 p-3">
+                <div class="fw-bold fs-6 mb-1">🔐 Безопасность</div>
+                <div class="text-muted small">Смена пароля и настройки безопасности</div>
+                <div class="mt-2">
+                    <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-sm btn-outline-primary">Сменить пароль</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,594 @@
+﻿@model ProductCatalog.Model.model.Product.Product
+@using ProductCatalog.Model.model.Review
+@{
+    ViewData["Title"] = Model.Name;
+    var reviews = ViewBag.Reviews as List<Review> ?? new();
+    var recommended = ViewBag.Recommended as List<ProductCatalog.Model.model.Product.Product> ?? new();
+    decimal rating = ViewBag.Rating ?? 0m;
+    int reviewsCount = ViewBag.ReviewsCount ?? 0;
+    int fullStars = (int)Math.Round(rating);
+}
+
+<style>
+    .details-page {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+        color: #222;
+    }
+
+    .product-main {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 28px;
+        align-items: start;
+    }
+
+    .poster-wrap {
+        background: #fff;
+        border-radius: 18px;
+        border: 1px solid #eef1f7;
+        box-shadow: 0 10px 24px rgba(45,66,122,.08);
+        padding: 14px;
+    }
+
+        .poster-wrap img {
+            width: 100%;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+    .product-info {
+        background: #fff;
+        border: 1px solid #eef1f7;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(45,66,122,.08);
+        padding: 20px 24px;
+    }
+
+    .price {
+        color: #6b4dff;
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .title {
+        font-size: 34px;
+        font-weight: 700;
+        margin: 8px 0 0;
+    }
+
+    .rating-row {
+        margin-top: 6px;
+        color: #ffbf00;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .rating-row .score {
+            color: #495057;
+            font-size: 14px;
+        }
+
+    .desc {
+        margin-top: 16px;
+        color: #4f5b6b;
+        line-height: 1.6;
+    }
+
+    .specs {
+        margin-top: 20px;
+    }
+
+        .specs h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+    .specs-grid {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        row-gap: 10px;
+        column-gap: 12px;
+        font-size: 14px;
+    }
+
+    .specs-label {
+        color: #7b8798;
+    }
+
+    .action-row {
+        margin-top: 26px;
+    }
+
+    .buy-btn {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 34px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg,#2097ff,#6b4dff);
+        box-shadow: 0 8px 18px rgba(74,88,255,.28);
+        cursor: pointer;
+    }
+
+    .tabs {
+        margin-top: 30px;
+    }
+
+    .tab-head {
+        display: flex;
+        gap: 24px;
+        border-bottom: 1px solid #e9edf5;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+    }
+
+        .tab-head span {
+            font-weight: 600;
+            color: #96a0b1;
+        }
+
+        .tab-head .active {
+            color: #2e3642;
+            border-bottom: 3px solid #6b4dff;
+            padding-bottom: 10px;
+        }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 14px;
+    }
+
+    .comment-card {
+        border: 1px solid #edf1f8;
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px;
+        box-shadow: 0 8px 20px rgba(34,58,107,.04);
+    }
+
+    .comment-meta {
+        font-size: 12px;
+        color: #8b95a8;
+        margin-bottom: 6px;
+    }
+
+    .comment-author {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .comment-rating {
+        color: #ffbf00;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .recommend {
+        margin-top: 42px;
+    }
+
+        .recommend h3 {
+            margin-bottom: 16px;
+            font-size: 28px;
+        }
+
+    .recommend-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .game-card {
+        border: 1px solid #edf1f8;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(34,58,107,.04);
+        overflow: hidden;
+        padding: 10px;
+    }
+
+    .game-cover {
+        width: 100%;
+        height: 190px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #f2f5fb;
+    }
+
+    .game-price {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 10px 0 4px;
+    }
+
+    .game-title {
+        font-size: 14px;
+        min-height: 38px;
+        margin: 0;
+    }
+
+    .game-meta {
+        font-size: 12px;
+        color: #8b95a8;
+        margin: 6px 0 10px;
+    }
+
+    .small-buy {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 9px 14px;
+        color: #fff !important;
+        background: linear-gradient(90deg,#2097ff,#6b4dff);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    @@media (max-width: 992px) {
+        .product-main {
+            grid-template-columns: 1fr;
+        }
+
+        .recommend-grid {
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+        }
+
+        .cards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 6px;
+        width: fit-content;
+        margin-bottom: 4px;
+    }
+
+        .star-rating .star {
+            font-size: 32px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.15s;
+            user-select: none;
+        }
+
+            .star-rating .star.active {
+                color: #ffbf00;
+            }
+
+            .star-rating .star:hover {
+                color: #ffbf00;
+            }
+
+    .stars-display {
+        display: inline-flex;
+        gap: 2px;
+        font-size: 18px;
+    }
+
+    .star-full {
+        color: #ffbf00;
+    }
+
+    .star-half {
+        position: relative;
+        display: inline-block;
+        color: #ddd;
+    }
+
+        .star-half::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #ffbf00;
+        }
+
+    .star-empty {
+        color: #ddd;
+    }
+</style>
+
+<div class="details-page">
+    <section class="product-main">
+        <div class="poster-wrap">
+            <img src=@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://placehold.co/400x560?text=No+Image" : Model.ImageUrl)
+                 alt="@Model.Name" />
+        </div>
+
+        <div class="product-info">
+            <p class="price">@Model.Price.ToString("N0") ₽</p>
+            <h1 class="title">@Model.Name</h1>
+
+            <div class="rating-row">
+                <span id="productRating"></span>
+                <span class="score">@rating.ToString("0.0") · @reviewsCount оценок</span>
+            </div>
+
+            <script>
+                renderStars(@rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture), 'productRating');
+            </script>
+
+            <p class="desc">@Model.Description</p>
+
+            <div class="specs">
+                <h4>Краткие характеристики</h4>
+                <div class="specs-grid">
+                    <div class="specs-label">Категория</div>
+                    <div>@Model.Category?.Name</div>
+                    <div class="specs-label">Издатель</div>
+                    <div>@Model.Publisher?.Name</div>
+                    <div class="specs-label">Продавец</div>
+                    <div>@(Model.seller?.FullName)</div>
+                    <div class="specs-label">В наличии</div>
+                    <div>
+                        @if (Model.Quantity == 0)
+                        {
+                            <span class="badge bg-danger">Нет в наличии</span>
+                        }
+                        else
+                        {
+                            <span>@Model.Quantity шт.</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <form asp-controller="Products" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <button type="submit" class="buy-btn">В корзину</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="tabs">
+        <div class="tab-head">
+            <span class="active">Отзывы (@reviewsCount)</span>
+        </div>
+
+        @if (TempData["ReviewSuccess"] != null)
+        {
+            <div class="alert alert-success rounded-3 mb-3">✅ @TempData["ReviewSuccess"]</div>
+        }
+        @if (TempData["ReviewError"] != null)
+        {
+            <div class="alert alert-danger rounded-3 mb-3">⚠️ @TempData["ReviewError"]</div>
+        }
+
+        @if (ViewBag.HasPurchased == true && ViewBag.AlreadyReviewed == false)
+        {
+            <div style="background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);padding:24px;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:16px;color:#2e3642;margin-bottom:16px;">✍️ Оставить отзыв</div>
+                <form asp-controller="Home" asp-action="AddReview" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:13px;font-weight:600;color:#4f5b6b;display:block;margin-bottom:8px;">Оценка</label>
+                        <input type="hidden" name="rating" id="ratingInput" value="5" />
+                        <div class="star-rating" id="starRating">
+                            <span class="star active" data-value="1">★</span>
+                            <span class="star active" data-value="2">★</span>
+                            <span class="star active" data-value="3">★</span>
+                            <span class="star active" data-value="4">★</span>
+                            <span class="star active" data-value="5">★</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:13px;font-weight:600;color:#4f5b6b;display:block;margin-bottom:6px;">Комментарий</label>
+                        <textarea name="comment" rows="3" placeholder="Поделитесь впечатлениями о товаре..."
+                              style="width:100%;border:1.5px solid #e9edf5;border-radius:12px;padding:11px 14px;font-size:14px;background:#f9fafc;resize:vertical;font-family:inherit;"></textarea>
+                    </div>
+
+                    <button type="submit"
+                            style="border:none;border-radius:999px;padding:11px 28px;font-size:15px;font-weight:600;color:#fff;background:linear-gradient(90deg,#2097ff,#6b4dff);box-shadow:0 8px 18px rgba(74,88,255,0.28);cursor:pointer;">
+                        Отправить отзыв
+                    </button>
+                </form>
+            </div>
+        }
+        else if (ViewBag.AlreadyReviewed == true)
+        {
+            <div style="background:#f0f4ff;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:14px;color:#6b4dff;font-weight:600;">
+                ✓ Вы уже оставили отзыв на этот товар
+            </div>
+        }
+        else if (ViewBag.HasPurchased == false && Context.Session.GetInt32("UserId") != null)
+        {
+            <div style="background:#fff8e1;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:14px;color:#f57f17;">
+                💡 Оставить отзыв можно только после покупки товара
+            </div>
+        }
+
+        @if (reviews.Any())
+        {
+            <div class="cards-grid">
+                @foreach (var review in reviews)
+                {
+                    <article class="comment-card">
+                        <div class="comment-author">@(review.User?.FullName ?? "Покупатель")</div>
+                        <div class="comment-meta">@review.DateCreated.ToString("dd MMMM yyyy, HH:mm")</div>
+                        <div id="reviewStars-@review.Id" style="margin-top:4px;margin-bottom:8px;"></div>
+
+                        @if (review.UserId == Context.Session.GetInt32("UserId"))
+                        {
+                            <div id="edit-block-@review.Id" style="display:none; margin-top:12px;">
+                                <form asp-controller="Home" asp-action="EditReview" method="post">
+                                    <input type="hidden" name="reviewId" value="@review.Id" />
+                                    <input type="hidden" name="rating" id="editRatingInput-@review.Id" value="@review.Rating" />
+
+                                    <div style="margin-bottom:10px;">
+                                        <label style="font-size:13px;font-weight:600;color:#4f5b6b;display:block;margin-bottom:6px;">Оценка</label>
+                                        <div class="star-rating" id="editStars-@review.Id">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <span class="star" data-value="@i"
+                                                      style="font-size:28px;cursor:pointer;color:@(i <= review.Rating ? "#ffbf00" : "#ddd")">★</span>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom:10px;">
+                                        <label style="font-size:13px;font-weight:600;color:#4f5b6b;display:block;margin-bottom:6px;">Комментарий</label>
+                                        <textarea name="comment" rows="3"
+                                      style="width:100%;border:1.5px solid #e9edf5;border-radius:12px;padding:10px 14px;font-size:14px;background:#f9fafc;resize:vertical;font-family:inherit;">@review.Comment</textarea>
+                                    </div>
+
+                                    <div style="display:flex;gap:10px;">
+                                        <button type="submit"
+                                                style="border:none;border-radius:999px;padding:9px 22px;font-size:14px;font-weight:600;color:#fff;background:linear-gradient(90deg,#2097ff,#6b4dff);cursor:pointer;">
+                                            Сохранить
+                                        </button>
+                                        <button type="button" onclick="toggleEdit(@review.Id)"
+                                                style="border:1.5px solid #e9edf5;border-radius:999px;padding:9px 22px;font-size:14px;font-weight:600;background:#fff;color:#4f5b6b;cursor:pointer;">
+                                            Отмена
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="view-block-@review.Id">
+                                <div style="font-size:14px;color:#4f5b6b;">@review.Comment</div>
+                                <div style="text-align:right;margin-top:8px;">
+                                    <button onclick="toggleEdit(@review.Id)"
+                                            style="background:none;border:none;font-size:13px;color:#6b4dff;font-weight:600;cursor:pointer;">
+                                        ✏️ Изменить
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="font-size:14px;color:#4f5b6b;margin-top:4px;">@review.Comment</div>
+                        }
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Отзывов пока нет. Будьте первым!</p>
+        }
+    </section>
+
+    <section class="recommend">
+        <h3>Смотрите также</h3>
+        <div class="recommend-grid">
+            @foreach (var game in recommended)
+            {
+                <article class="game-card">
+                    <img class="game-cover"
+                         src=@(string.IsNullOrEmpty(game.ImageUrl) ? "https://placehold.co/300x190?text=No+Image" : game.ImageUrl) alt="@game.Name" />
+                    <p class="game-price">@game.Price.ToString("N0") ₽</p>
+                    <p class="game-title">@game.Name</p>
+                    @if (!string.IsNullOrEmpty(game.Description))
+                    {
+                        <div class="game-meta text-truncate">@game.Description</div>
+                    }
+                    <div class="game-meta">@game.Category?.Name</div>
+                    <a asp-action="Details" asp-route-id="@game.Id" class="small-buy">Подробнее</a>
+                </article>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+    function renderStars(rating, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        let html = '<span class="stars-display">';
+        for (let i = 1; i <= 5; i++) {
+            if (rating >= i) {
+                html += '<span class="star-full">★</span>';
+            } else if (rating >= i - 0.5) {
+                html += '<span class="star-half">★</span>';
+            } else {
+                html += '<span class="star-empty">★</span>';
+            }
+        }
+        html += '</span>';
+        container.innerHTML = html;
+    }
+
+    renderStars(@rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture), 'productRating');
+
+    @foreach (var review in reviews)
+    {
+            <text>renderStars(@review.Rating, 'reviewStars-@review.Id');</text>
+    }
+
+    const newStars = document.querySelectorAll('#starRating .star');
+    const newRatingInput = document.getElementById('ratingInput');
+
+    if (newRatingInput) {
+        newStars.forEach(star => {
+            star.addEventListener('mouseover', function () {
+                const val = parseInt(this.dataset.value);
+                newStars.forEach(s => s.style.color = parseInt(s.dataset.value) <= val ? '#ffbf00' : '#ddd');
+            });
+
+            star.addEventListener('mouseout', function () {
+                const selected = parseInt(newRatingInput.value);
+                newStars.forEach(s => s.style.color = parseInt(s.dataset.value) <= selected ? '#ffbf00' : '#ddd');
+            });
+
+            star.addEventListener('click', function () {
+                const val = parseInt(this.dataset.value);
+                newRatingInput.value = val;
+                newStars.forEach(s => s.style.color = parseInt(s.dataset.value) <= val ? '#ffbf00' : '#ddd');
+            });
+        });
+    }
+
+    document.querySelectorAll('[id^="editStars-"]').forEach(container => {
+        const stars = container.querySelectorAll('.star');
+        const reviewId = container.id.replace('editStars-', '');
+        const ratingInput = document.getElementById('editRatingInput-' + reviewId);
+        if (!ratingInput) return;
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function () {
+                const val = parseInt(this.dataset.value);
+                stars.forEach(s => s.style.color = parseInt(s.dataset.value) <= val ? '#ffbf00' : '#ddd');
+            });
+
+            star.addEventListener('mouseout', function () {
+                const selected = parseInt(ratingInput.value);
+                stars.forEach(s => s.style.color = parseInt(s.dataset.value) <= selected ? '#ffbf00' : '#ddd');
+            });
+
+            star.addEventListener('click', function () {
+                const val = parseInt(this.dataset.value);
+                ratingInput.value = val;
+                stars.forEach(s => s.style.color = parseInt(s.dataset.value) <= val ? '#ffbf00' : '#ddd');
+            });
+        });
+    });
+
+    function toggleEdit(reviewId) {
+        const editBlock = document.getElementById('edit-block-' + reviewId);
+        const viewBlock = document.getElementById('view-block-' + reviewId);
+        const isHidden = editBlock.style.display === 'none';
+        editBlock.style.display = isHidden ? 'block' : 'none';
+        viewBlock.style.display = isHidden ? 'none' : 'block';
+    }
+</script>

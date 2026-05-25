@@ -1,0 +1,75 @@
+﻿@model ProductCatalog.Model.model.Product.Product
+@{
+    ViewData["Title"] = "Добавить товар";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 500px;">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h4 class="mb-0">Новый товар</h4>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label small text-uppercase fw-bold"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Название товара" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label small text-uppercase fw-bold"></label>
+                    <input asp-for="Price" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Quantity" class="form-label small text-uppercase fw-bold"></label>
+                    <input asp-for="Quantity" class="form-control" placeholder="0" />
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label small text-uppercase fw-bold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Описание товара"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label small text-uppercase fw-bold"></label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label small text-uppercase fw-bold">Категория</label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                        <option value="">-- Выберите категорию --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PublisherId" class="form-label small text-uppercase fw-bold">Издатель</label>
+                    <select asp-for="PublisherId" asp-items="ViewBag.Publishers" class="form-select">
+                        <option value="">-- Выберите издателя --</option>
+                    </select>
+                    <span asp-validation-for="PublisherId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg">Сохранить</button>
+                </div>
+
+                <div class="text-center">
+                    <a asp-action="Index" class="small text-decoration-none">← Назад к списку</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

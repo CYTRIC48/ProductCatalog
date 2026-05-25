@@ -1,0 +1,206 @@
+﻿@model List<ProductCatalog.Model.model.Review.Review>
+@{
+    ViewData["Title"] = "Мои отзывы";
+}
+
+<style>
+    .reviews-wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 16px;
+    }
+
+    .reviews-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2e3642;
+        margin-bottom: 20px;
+    }
+
+    .review-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 20px 24px;
+        margin-bottom: 14px;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+    }
+
+    .product-name {
+        font-weight: 700;
+        font-size: 16px;
+        color: #2e3642;
+        text-decoration: none;
+    }
+
+        .product-name:hover {
+            color: #6b4dff;
+        }
+
+    .review-date {
+        font-size: 13px;
+        color: #8b95a8;
+        margin-top: 4px;
+    }
+
+    .stars-display {
+        display: inline-flex;
+        gap: 2px;
+        font-size: 18px;
+    }
+
+    .star-full {
+        color: #ffbf00;
+    }
+
+    .star-half {
+        position: relative;
+        display: inline-block;
+        color: #ddd;
+    }
+
+        .star-half::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #ffbf00;
+        }
+
+    .star-empty {
+        color: #ddd;
+    }
+
+    .review-comment {
+        font-size: 14px;
+        color: #4f5b6b;
+        line-height: 1.6;
+        margin-top: 10px;
+    }
+
+    .divider {
+        height: 1px;
+        background: #f0f2f7;
+        margin: 12px 0;
+    }
+
+    .btn-go {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b4dff;
+        text-decoration: none;
+        border: 1.5px solid #e9edf5;
+        border-radius: 999px;
+        padding: 6px 16px;
+        transition: all 0.2s;
+    }
+
+        .btn-go:hover {
+            border-color: #6b4dff;
+            color: #6b4dff;
+        }
+
+    .empty-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        padding: 60px 24px;
+        text-align: center;
+        color: #8b95a8;
+    }
+
+    .empty-icon {
+        font-size: 52px;
+        margin-bottom: 16px;
+    }
+
+    .empty-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2e3642;
+        margin-bottom: 8px;
+    }
+
+    .btn-back {
+        display: inline-block;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #6b4dff;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<div class="reviews-wrap">
+    <a asp-controller="Account" asp-action="Profile" class="btn-back">← Назад в личный кабинет</a>
+    <div class="reviews-title">⭐ Мои отзывы</div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-card">
+            <div class="empty-icon">💬</div>
+            <div class="empty-title">Отзывов пока нет</div>
+            <div>После покупки товара вы сможете оставить отзыв</div>
+        </div>
+    }
+    else
+    {
+        @foreach (var review in Model)
+        {
+            <div class="review-card">
+                <div class="review-header">
+                    <div>
+                        <a asp-controller="Products" asp-action="Details"
+                           asp-route-id="@review.ProductId" class="product-name">
+                            @review.Product?.Name
+                        </a>
+                        <div class="review-date">@review.DateCreated.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                    <a asp-controller="Products" asp-action="Details"
+                       asp-route-id="@review.ProductId" class="btn-go">
+                        Перейти к товару →
+                    </a>
+                </div>
+
+                <div id="stars-@review.Id"></div>
+
+                <div class="divider"></div>
+
+                <div class="review-comment">@review.Comment</div>
+            </div>
+        }
+    }
+</div>
+
+<script>
+    function renderStars(rating, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        let html = '<span class="stars-display">';
+        for (let i = 1; i <= 5; i++) {
+            if (rating >= i) html += '<span class="star-full">★</span>';
+            else if (rating >= i - 0.5) html += '<span class="star-half">★</span>';
+            else html += '<span class="star-empty">★</span>';
+        }
+        html += '</span>';
+        container.innerHTML = html;
+    }
+
+    @foreach (var review in Model)
+    {
+            <text>renderStars(@review.Rating, 'stars-@review.Id');</text>
+    }
+</script>

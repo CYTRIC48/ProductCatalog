@@ -1,0 +1,78 @@
+﻿@{
+    var fullName = Context.Session.GetString("UserName");
+    var initial = !string.IsNullOrEmpty(fullName) ? fullName[0].ToString().ToUpper() : "?";
+    var searchString = Context.Request.Query["searchString"].ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProductCatalog.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ProductCatalog.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bg-light rounded-pill px-3 py-2 d-flex align-items-center gap-2" style="background: linear-gradient(90deg, #f0f4ff 0%, #e0eaff 100%);">
+                            <a class="fw-bold text-uppercase tracking-wider" style="color: #2c4bff; letter-spacing: 1px; text-decoration: none;" asp-area="" asp-controller="Home" asp-action="Index">МАРКЕТ</a>
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);">
+                                <i class="bi bi-bag-fill text-white small"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow-1 mx-2">
+                        <form asp-controller="Home" asp-action="Index" method="get" class="flex-grow-1 mx-2">
+                            <input type="hidden" name="sortOrder" value="@Context.Request.Query["sortOrder"]" />
+                            <div class="input-group rounded-pill border overflow-hidden bg-white px-3 py-1 shadow-sm">
+                                <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" name="searchString" value="@searchString"
+                                       class="form-control border-0 shadow-none" placeholder="Поиск...">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        <li class="nav-item me-2">
+                            <a class="user-avatar rounded-circle d-flex align-items-center justify-content-center text-white"
+                               style="text-decoration:none;" asp-controller="Home" asp-action="Basket">
+                                🛒
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="user-avatar rounded-circle d-flex align-items-center justify-content-center text-white"
+                               asp-area="" asp-controller="Account" asp-action="Profile">
+                                @initial
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - ProductCatalog.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

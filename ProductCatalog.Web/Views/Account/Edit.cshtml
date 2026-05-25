@@ -1,0 +1,156 @@
+﻿@model ProductCatalog.Model.model.User.User
+@{
+    ViewData["Title"] = "Редактирование профиля";
+    Layout = "_LayoutClean";
+}
+
+<style>
+    .edit-wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+    }
+
+    .edit-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        padding: 40px 36px;
+        width: 100%;
+        max-width: 460px;
+    }
+
+    .edit-logo {
+        font-size: 26px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 6px;
+    }
+
+    .edit-subtitle {
+        color: #8b95a8;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
+
+    .edit-card label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4f5b6b;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .edit-card .form-control {
+        border: 1.5px solid #e9edf5;
+        border-radius: 12px;
+        padding: 11px 14px;
+        font-size: 15px;
+        background: #f9fafc;
+        transition: border 0.2s;
+    }
+
+        .edit-card .form-control:focus {
+            border-color: #6b4dff;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(107,77,255,0.08);
+        }
+
+    .btn-save {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 13px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #2097ff, #6b4dff);
+        box-shadow: 0 8px 18px rgba(74,88,255,0.28);
+        cursor: pointer;
+        transition: opacity 0.2s;
+        margin-top: 6px;
+    }
+
+        .btn-save:hover {
+            opacity: 0.92;
+        }
+
+    .edit-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+        .edit-footer a {
+            color: #6b4dff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+            .edit-footer a:hover {
+                text-decoration: underline;
+            }
+
+    .fields-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 16px;
+    }
+</style>
+
+<div class="edit-wrap">
+    <div class="edit-card">
+        <div class="edit-logo">МАРКЕТ</div>
+        <div class="edit-subtitle">Редактирование профиля</div>
+
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small rounded-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Role" />
+            <input type="hidden" asp-for="Password" />
+
+            <div class="mb-3">
+                <label asp-for="FullName">Полное имя</label>
+                <input asp-for="FullName" class="form-control" placeholder="Иванов Иван Иванович" autofocus />
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="fields-row">
+                <div class="mb-4">
+                    <label asp-for="Phone">Телефон</label>
+                    <input asp-for="Phone" class="form-control" placeholder="+7 (999) 999-99-99" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Address">Адрес</label>
+                    <input asp-for="Address" class="form-control" placeholder="Город, улица, дом" />
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-save">Сохранить изменения</button>
+        </form>
+
+        <div class="edit-footer">
+            <a asp-action="Profile">← Назад в личный кабинет</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
